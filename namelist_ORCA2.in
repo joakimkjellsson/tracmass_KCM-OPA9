@@ -86,10 +86,10 @@
      loopEndYear    = 4409,				     ! last year of loop
 
      ! Verbose
-     log_level    = 5
+     log_level    = 0
 
      ! Information of run time
-     intrun         = 12             ! number of time steps for run
+     intrun         = 12000             ! number of time steps for run
 /
 
 &INIT_WRITE_TRAJ
@@ -182,7 +182,7 @@
 /
 
 &INIT_KILLZONES
-      timax = 75000 ! time limit for traj [days]
+      timax = 365000 ! time limit for traj [days]
 
       exitType = 1
       ! If exitType = 1: killing zone defined by a box
@@ -195,10 +195,10 @@
       ! jenn = 300,  470,
       ! sets up two killzones, the first i = [0,100], j = [200,300]
       ! the other i = [500,1000], j = [450,470]
-      ienw           =  220, 220,	       ! west indices of killzones
-      iene           =  310, 310,   	     ! east indices of killzones
-      jens           =  95, 215,         ! south indices of killzones
-      jenn           =  95, 215,         ! north indices of killzones
+      ienw           =  76, 76,	       ! west indices of killzones
+      iene           = 110, 110,   	     ! east indices of killzones
+      jens           =   1, 1,         ! south indices of killzones
+      jenn           =  20, 20,         ! north indices of killzones
 
       ! If exitType = 2: killing zone defined by tracer value
       ! Tracerchoice defines which tracer is used for the killing zone

@@ -29,10 +29,10 @@ SUBROUTINE kill_zones
   ! Exit domain defined by the boxes [ienw, iene]x[jens, jenn]
   ! in the namelist
   CASE(1)
-      DO nexit = 1, 10
+      DO nexit = 1, 2
          IF(ienw(nexit) <= x1 .AND. x1 <= iene(nexit) .AND. &
               jens(nexit) <= y1 .AND. y1 <= jenn(nexit) ) THEN
-              nend = nexit +1
+            nend = nexit +1
          END IF
       END DO
 
@@ -45,7 +45,7 @@ SUBROUTINE kill_zones
          itrac = tracerchoice(nexit)
 
          IF (  maxormin(nexit)*tracervalue(itrac)>= maxormin(nexit)*tracere(nexit) ) THEN
-                nend = nexit +1
+            nend = nexit +1
          END IF
 
       END DO
@@ -60,16 +60,16 @@ SUBROUTINE kill_zones
          itrac = tracerchoice(nexit)
 
          IF (  maxormin(nexit)*tracervalue(itrac)>= maxormin(nexit)*tracere(nexit) ) THEN
-                nend = nexit +1
+            nend = nexit +1
          END IF
 
       END DO
 
       ! Next the geographical killing zone
-      DO nexit = 1, 10
+      DO nexit = 1, 2
          IF(ienw(nexit) <= x1 .AND. x1 <= iene(nexit) .AND. &
               jens(nexit) <= y1 .AND. y1 <= jenn(nexit) ) THEN
-              nend = nexit +1 + numexit
+            nend = nexit +1 + numexit
          END IF
       END DO
 

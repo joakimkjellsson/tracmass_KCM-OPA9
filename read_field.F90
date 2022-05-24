@@ -70,9 +70,7 @@ SUBROUTINE read_field
           WRITE(dateprefix(16:17),'(I2)') daysinmonth(currMon,1)
        ENDIF
        fieldFile = TRIM(physDataDir)//TRIM(physPrefixForm)//TRIM(dateprefix)//TRIM(tGridName)//TRIM(fileSuffix)
-       print*,fieldFile
 
-       print*,imindom, jmindom, imt, jmt, nctstep
        hs(1:imt,1:jmt,-1) = get2DfieldNC(fieldFile, hs_name,[imindom,jmindom,nctstep,1],[imt,jmt,1,1],'st')
        hs(imt+1,:,-1)     = hs(1,:,-1)
 
@@ -96,7 +94,6 @@ SUBROUTINE read_field
      ENDIF
 
      fieldFile = TRIM(physDataDir)//TRIM(physPrefixForm)//TRIM(dateprefix)//TRIM(tGridName)//TRIM(fileSuffix)
-     print*,fieldFile
      hs(1:imt,1:jmt,0) = get2DfieldNC(fieldFile, hs_name,[imindom,jmindom,nctstep,1],[imt,jmt,1,1],'st')
      hs(imt+1,:,0)     = hs(1,:,0)
 
@@ -130,7 +127,6 @@ SUBROUTINE read_field
      ENDIF
 
      fieldFile = TRIM(physDataDir)//TRIM(physPrefixForm)//TRIM(dateprefix)//TRIM(tGridName)//TRIM(fileSuffix)
-     print*,fieldFile
      hs(1:imt,1:jmt,1) = get2DfieldNC(fieldFile, hs_name,[imindom,jmindom,nctstep,1],[imt,jmt,1,1],'st')
      hs(imt+1,:,1)     = hs(1,:,1)
 
@@ -237,17 +233,19 @@ SUBROUTINE read_field
    ! ===========================================================================
 
    ! uflux and vflux computation
-   FORALL (kk = 1:km) uflux(:,:,kk,2)     = uvel(:,:,kk)*dyu(:,:)*dzu(:,:,kk,2)*zstou(:,:)
-   FORALL (kk = 1:km) vflux(:,1:jmt,kk,2) = vvel(:,1:jmt,kk)*dxv(:,1:jmt)*dzv(:,1:jmt,kk,2)*zstov(:,:)
+   ! KCM does not use vvl, so uflux = u * dy * dz (constant dz)
+   FORALL (kk = 1:km) uflux(:,:,kk,2)     = uvel(:,:,kk)*dyu(:,:)*dzu(:,:,kk,2) !*zstou(:,:)
+   FORALL (kk = 1:km) vflux(:,1:jmt,kk,2) = vvel(:,1:jmt,kk)*dxv(:,1:jmt)*dzv(:,1:jmt,kk,2) !*zstov(:,:)
 
    ! dzdt calculation
-   IF (ints == 0 .AND. ( loopYears .EQV..FALSE.)) THEN
-      FORALL (kk = 1:km) dzdt(:,:,kk,2) = dzt(:,:,kk,2)*(zstot(:,:,1) - zstot(:,:,0))/tseas
-   ELSE IF (ints == intrun-1 .AND. ( loopYears .EQV..FALSE.)) THEN
-      FORALL (kk = 1:km) dzdt(:,:,kk,2) = dzt(:,:,kk,2)*(zstot(:,:,0) - zstot(:,:,-1))/tseas
-   ELSE
-      FORALL (kk = 1:km) dzdt(:,:,kk,2) = 0.5*dzt(:,:,kk,2)*(zstot(:,:,1) - zstot(:,:,-1))/tseas
-   END IF
+   !IF (ints == 0 .AND. ( loopYears .EQV..FALSE.)) THEN
+   !   FORALL (kk = 1:km) dzdt(:,:,kk,2) = dzt(:,:,kk,2)*(zstot(:,:,1) - zstot(:,:,0))/tseas
+   !ELSE IF (ints == intrun-1 .AND. ( loopYears .EQV..FALSE.)) THEN
+   !   FORALL (kk = 1:km) dzdt(:,:,kk,2) = dzt(:,:,kk,2)*(zstot(:,:,0) - zstot(:,:,-1))/tseas
+   !ELSE
+   !   FORALL (kk = 1:km) dzdt(:,:,kk,2) = 0.5*dzt(:,:,kk,2)*(zstot(:,:,1) - zstot(:,:,-1))/tseas
+   !END IF
+   dzdt(:,:,:,:) = 0.d0 ! dz is constant
 
    !! Zero meridional flux at j=0 and j=jmt
    vflux(:,0  ,:,:) = 0.d0
